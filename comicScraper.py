@@ -28,13 +28,14 @@ from bs4 import BeautifulSoup
 import os.path
 import os
 
+infile = open("infile.txt", 'r')
 rawlinks = "links.txt"
 set_links = set()
 
 
 
 
-def index_page(url):
+def index_page(url, path):
 	#	Grabs index page
 	#	Filters each link to a page
 	#	to the appropriate function
@@ -51,10 +52,10 @@ def index_page(url):
 			if "week" in href_value:
 				week_page(href_value)
 			else:
-				get_link(href_value)
+				get_link(href_value, path)
 
 
-def get_link(url):
+def get_link(url, path):
 	#	Figures out if a page
 	#	is a red button or a
 	#	collection page passes
@@ -78,7 +79,7 @@ def get_link(url):
 					titletext = title.text
 					titletext = titletext.replace("The Story – ", "")
 					titletext = titletext.replace(" ","_")
-					set_links.add(link + " " + titletext)
+					set_links.add(link + ' ' + path + titletext)
 					print(titletext)			
 	else:
 		link = testtag.get('href')
@@ -86,7 +87,7 @@ def get_link(url):
 		titletext = title.text
 		titletext = titletext.replace("The Story – ","")
 		titletext = titletext.replace(" ","_")
-		set_links.add(link + " " + titletext)
+		set_links.add(link + " " + path + titletext)
 		print(titletext)
 		
 
@@ -124,22 +125,28 @@ n = 2
 #iterates over the newest n pages of comics (minimum 2)
 
 base_url = "https://getcomics.info"
-query = ""
-for i in range(1,n):
-	if i == 1:
-		
-		url = base_url + query
-		print(url)
-		index_page(url)
+queries = infile.readlines()
 
-	else:
-		
-		#https://getcomics.info/page/3/
-		#https://getcomics.info/page/3/
-		url = "https://getcomics.info/page/"+str(i)+query
-		print(url)
-		index_page(url)	
-	write_links(set_links)
-	set_links.clear()
+for queryline in queries:
+	querylist = queryline.split(',')
+	query = querylist[0]
+	path = querylist[1].replace('\n','')
+
+	for i in range(1,n):
+		if i == 1:
+			
+			url = base_url + '/?s=' + query
+			print(url)
+			index_page(url, path)
+
+		else:
+			
+			#https://getcomics.info/page/3/
+			#https://getcomics.info/page/3/
+			url = "https://getcomics.info/page/"+str(i)+'/?s='+query
+			print(url)
+			index_page(url, path)	
+		write_links(set_links)
+		set_links.clear()
 
 

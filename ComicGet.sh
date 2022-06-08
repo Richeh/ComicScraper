@@ -1,6 +1,6 @@
 while read -r link name;
 do
-	wget $link -O $name.cbr
+	wget $link -O "$name.cbr"
 	
 done
 
