@@ -79,17 +79,22 @@ def get_link(url, path):
 					titletext = title.text
 					titletext = titletext.replace("The Story – ", "")
 					titletext = titletext.replace(" ","_")
-					set_links.add(link + ' ' + path + titletext)
-					print(titletext)			
+					if not os.path.exists(path + titletext + ".cbr"):
+						set_links.add(link + ' ' + path + titletext)
+						print(path+titletext)
+					else:
+						print(titletext+" already exists")
 	else:
 		link = testtag.get('href')
 		title = titlesoup.find('section',{'class':'post-contents'}).h2
 		titletext = title.text
 		titletext = titletext.replace("The Story – ","")
 		titletext = titletext.replace(" ","_")
-		set_links.add(link + " " + path + titletext)
-		print(titletext)
-		
+		if not os.path.exists(path + titletext + ".cbr"):
+			set_links.add(link + " " + path + titletext)
+			print(path+titletext)
+		else:
+			print(titletext+" already exists")
 
 
 
